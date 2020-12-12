@@ -27,7 +27,7 @@ public class MongoAuthenticationProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        User user = userRepository.findFirstByUsername(username);
+        User user = userRepository.findFirstByUsernameAndActive(username, true);
 
         if(Objects.nonNull(user) && PasswordCodec.checkPass(password, user.getPassword())){
 

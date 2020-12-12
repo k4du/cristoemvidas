@@ -22,6 +22,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Objects;
 
 
 @EnableGlobalMethodSecurity(
@@ -38,16 +39,9 @@ public class SecurityApplication {
 
 	public static String SECRET;
 
-	public static String SECRET_PLUB;
-
 	@Value("${secretKey}")
 	private void setSECRET(String SECRET) {
 		this.SECRET = SECRET;
-	}
-
-	@Value("${secretKeyPlub}")
-	private void setSECRET_PLUB(String SECRET_PLUB) {
-		this.SECRET_PLUB = SECRET_PLUB;
 	}
 
 	public static void main(String[] args) {
@@ -58,20 +52,23 @@ public class SecurityApplication {
 	@PostConstruct
 	public void createData(){
 
-		Role role  = Role.builder()
-				.role("ADMIN")
-				.build();
+		User user = userRepository.findFirstByUsername("carlos.couto");
+		if(Objects.isNull(user)){
+			Role role  = Role.builder()
+					.role("ADMIN")
+					.build();
 
-		User user = User.builder()
-				.name("Carlos Eduardo")
-				.username("carlos.couto")
-				.email("cadu.maia.couto@gmail.com")
-				.password(PasswordCodec.encode("12345678"))
-				.roles(Arrays.asList(role))
-				.build();
+			user = User.builder()
+					.name("Carlos Eduardo")
+					.username("carlos.couto")
+					.email("cadu.maia.couto@gmail.com")
+					.active(true)
+					.password(PasswordCodec.encode("12345678"))
+					.roles(Arrays.asList(role))
+					.build();
 
-		userRepository.save(user);
-
+			userRepository.save(user);
+		}
 	}
 
 	@Bean(name = "privateKeySecurity")
@@ -86,15 +83,5 @@ public class SecurityApplication {
 
 		return kf.generatePrivate(spec);
 	}
-
-//	@Bean(name = "publicKeySecurity")
-//	public PublicKey publicKeySecurity() throws Exception {
-//
-//		X509EncodedKeySpec spec =
-//				new X509EncodedKeySpec(Base64.getDecoder().decode(SECRET_PLUB));
-//
-//		KeyFactory kf = KeyFactory.getInstance("RSA");
-//		return kf.generatePublic(spec);
-//	}
 
 }

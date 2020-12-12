@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 
 import java.util.List;
 
@@ -13,15 +14,19 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Data
+
+@CompoundIndex(name = "username", def = "{'username': 1}", background = true)
+@CompoundIndex(name = "username_active", def = "{'username': 1, 'active': 1}", background = true)
 public class User {
 
     @Id
-    String id;
-    String name;
-    String username;
-    String password;
-    String email;
+    private String id;
+    private String name;
+    private String username;
+    private String password;
+    private String email;
+    private Boolean active;
 
-    List<Role> roles;
+    private List<Role> roles;
 
 }
