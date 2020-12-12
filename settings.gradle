@@ -1,0 +1,3 @@
+rootProject.name = 'cristoemvidas'
+
+include('commons-security', 'user-service', 'security')
