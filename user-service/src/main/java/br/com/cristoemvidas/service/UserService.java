@@ -6,6 +6,8 @@ import br.com.cristoemvidas.model.Role;
 import br.com.cristoemvidas.model.RoleEnum;
 import br.com.cristoemvidas.model.User;
 import br.com.cristoemvidas.repository.UserRepository;
+import br.com.cristoemvidas.util.APIResponse;
+import br.com.cristoemvidas.util.GenericProcessException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -63,7 +65,7 @@ public class UserService {
 
             Optional<User> userOptional = userRepository.findById(userDti.getId());
             if(!userOptional.isPresent()){
-                throw new RuntimeException("Usuário não encontrado.");
+                throw new GenericProcessException("Usuário não encontrado.", APIResponse.Status.BAD_REQUEST);
             }
 
             user = userOptional.get();
@@ -91,14 +93,13 @@ public class UserService {
 
     private void validateData(User user, UserDti userDti){
         if(Objects.isNull(userDti.getId()) && Objects.isNull(userDti.getPassword())){
-            throw new RuntimeException("Senha não pode ser vazia");
+            throw new GenericProcessException("Senha não pode ser vazia", APIResponse.Status.BAD_REQUEST);
         }
-
         if(!validEmail(userDti.getEmail(), user.getEmail())){
-            throw new RuntimeException("Email já utilizado");
+            throw new GenericProcessException("Email já utilizado", APIResponse.Status.BAD_REQUEST);
         }
         if(!validUsername(userDti.getUsername(), user.getUsername())){
-            throw new RuntimeException("Nome de usuário já utilizado");
+            throw new GenericProcessException("Nome de usuário já utilizado", APIResponse.Status.BAD_REQUEST);
         }
     }
 
@@ -111,8 +112,6 @@ public class UserService {
         }
         return false;
     }
-
-
 
     private boolean validEmail(String email, String oldEmail){
 
