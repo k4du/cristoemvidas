@@ -1,0 +1,14 @@
+server:
+  port: 8383
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: login
+        uri: http://localhost:8080
+        predicates:
+        - Path=/login
+      - id: login
+        uri: http://localhost:8282
+        predicates:
+          - Path=/user/**,/roles/**
