@@ -13,11 +13,11 @@ import org.springframework.security.core.GrantedAuthority;
 @Data
 public class Role implements GrantedAuthority {
 
-    String role;
-
     @JsonIgnore
     @Override
     public String getAuthority() {
         return  "ROLE_".concat(this.role.toUpperCase());
     }
+
+    String role;
 }
